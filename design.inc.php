@@ -247,7 +247,7 @@ function ShowFooter()
             <TR BGCOLOR='$FOOTER_BACKGROUNG_COLOR' HEIGHT='1' VALIGN='CENTER'>
                 <TD COLSPAN='3' ALIGN='CENTER'>
                     <FONT SIZE='-1' COLOR='$FOOTER_FONT_COLOR'>
-                        <A HREF='https://gna.org/projects/chronologist/'> Chronologist </A> - 
+                        <A HREF='https://github.com/sly74fr/Chronologist'> Chronologist </A> - 
           ";
 
     // Gets the version from the database
