@@ -1,0 +1,66 @@
+Chronologist
+————————————
+
+
+1) General Presentation
+Chronologist is a web software. Its goal is to store all the actions (and their duration) of some users in a database, in order to get some statistics about the manner the time is spent.
+
+
+2) Technologies Used
+As a web service, Chronologist is based on PHP and MySQL.
+
+Chronologist has been created with Apple Mac OS X operating system running on an Apple Macintosh computer, with the help of :
+- Apache, the bundled web server in each Mac OS X system;
+- Safari, the open-source based (on Konqueror) default web browser of Mac OS X ;
+- Xcode Tools, the free development suite provided by Apple;
+- Smultron, an open-source multi-document text editor;
+- SubEthaEdit, a shareware (free for hobbyist and academics) text editor;
+- CocoaMySQL, an open-source GUI-based MySQL databases browser;
+- PHP Function Index, a shareware (free for hobbyist and academics) GUI PHP official documentation browser and indexer;
+
+
+3) Detailed Fonctions
+Chronologist is a multi-user, project/activity/task based, time tracking system to get statistics on how time get spent.
+
+3.1) Multi-user
+Each user is identified by his email address, and belongs to at least one group. Some of the users are also administrators for their groups, and there is also a root user that can manage all the system.
+The data privacy is assured by a crypted user password authentification.
+
+3.1.1) Root User
+The root user has all the privileges on the system, as the main administrator. As the first and only user of the system after an installation from scratch, he is the only one that can create other group administrators, reset passwords and creates groups.
+
+3.1.2) Group Administrators
+Group administrators are the only users able to create projects accessible for all the members of a group. They are also able to add a user to their administered group. There can be more than one group administrator for each group.
+
+3.1.3) Simple users
+Simple users can belong to more than one group. They can create personal projects. They can also create tasks for every project they belong to.
+
+3.2) Project/Activity/Task based
+Chronologist manages tasks by project and activity.
+
+3.2.1) Projects
+Group administrators and simple users can create projects. A project can contain sub-project, regrouping all the tasks concerning the same subject. After completion,  a project can be closed, and can be re-opened at any time.
+
+3.2.2) Activities
+Activities are used to more accurately define a task, as a project is almost always made of several different activities. Activities are for the moment system-wide defined. Activities are currently managed by the root user and can contain sub-activities.
+
+3.2.3) Tasks
+Every users can create tasks, that are defined by their beginning date and duration, their subject and of course their related project and activity.
+
+3.3) Statistics on how time get spent
+Chronologist goal is to provide detailed statistics on the way time is spent on projects.
+
+3.3.1) Day to day statistics
+Users can retrieve time spent on projects worked on on a day to day basis, by specifying a beginning date and an end date.
+
+3.3.2) Weekly statistics
+Users will be able to retrieve time spent on projects worked on by giving a week number.
+
+3.3.3) Monthly statistics
+Users can retrieve time spent on projects worked on for a whole month.
+
+3.3.4) Global statistics
+Users can retrieve time spent on a whole project and its sub-projects. Global statistics can also be downloaded as an Microsoft Excel © compatible file.
+
+3.3.5) Activities statistics
+Users will be able to retrieve time spent on a whole activity and its sub-activities.
