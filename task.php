@@ -95,7 +95,7 @@ switch($Do)
 
             // Insert the new task in the database
             $SQL =  "INSERT INTO `tasks`
-                     VALUES ('',
+                     VALUES (NULL,
                              '$SessionUID',
                              '$TaskProject',
                              '$TaskActivity',
@@ -423,11 +423,21 @@ switch($Do)
 			$TaskResult = mysql_query($TaskSQL)
 			or die("Could not execute the '$TaskSQL' request.");
 
+			$PreviousDate = NULL;
+
 			// Displays all the projects
 			while ($TaskRow = mysql_fetch_array($TaskResult))
 			{
 				$TID       = $TaskRow['tid'];
 				$TaskLabel = $TaskRow['label'];
+				$Date      = GetFormattedDate($TaskRow['timestamp']);
+
+    			 if (strcmp($Date, $PreviousDate) != 0)
+				 {
+				    echo "<TR BGCOLOR='GREY'><TD COLSPAN='8'>&nbsp;</TD></TR>";
+				    $PreviousDate = $Date;
+				 }
+
 				echo "
                     <TR>
                         <TD ALIGN='LEFT'>
