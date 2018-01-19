@@ -32,7 +32,6 @@ require_once("design.inc.php");
 require_once("activity.inc.php");
 require_once("user.inc.php");
 
-
 // Retrieve the action to perform from the URL given 'do' parameter
 $Do = $_GET['do'];
 
@@ -40,7 +39,7 @@ $Do = $_GET['do'];
 switch($Do)
 {
     case "add" :
-        ShowSecureHeader("Activities Creation", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Activities Creation", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         ShowActivityFields();
 
@@ -67,14 +66,14 @@ switch($Do)
 
             // Insert the new activities in the database
             $SQL =  "INSERT INTO `activities`
-                     VALUES ('',
+                     VALUES (NULL,
                              '$PAID',
                              '$Label')
                     ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
 
-            $AID = mysql_insert_id();
+            $AID = mysqli_insert_id();
             if (ConnectedUserBelongsToAdminGroup() == TRUE)
             {
                 // ... ??? !
@@ -92,7 +91,7 @@ switch($Do)
                          VALUES ('$UID',
                                  '$AID')
                         ";
-                $Result = mysql_query($SQL)
+                $Result = mysqli_query($Connection, $SQL)
                 or die("Could not execute the '$SQL' request.");
 */
             }
@@ -105,7 +104,7 @@ switch($Do)
         break;
 
     case "modify" :
-        ShowSecureHeader("Modify Activities", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Modify Activities", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         ShowActivityFields(putslashes($_POST['aid']));
 
@@ -137,7 +136,7 @@ switch($Do)
                            `paid`  = '$PAID'
                     WHERE  `aid`   = '$AID'
                    ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
 
             $_SESSION['message'] = "The activities has been modifyed succesfully. <BR>";
@@ -148,7 +147,7 @@ switch($Do)
         break;
 
     default :
-        ShowSecureHeader("Activities List", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Activities List", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         echo "
               <TABLE BORDER='0'>
@@ -210,10 +209,10 @@ switch($Do)
                     FROM   `activities`
                     WHERE  `aid` = '$AID'
                    ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
-            $Row = mysql_fetch_array($Result);
-            mysql_free_result($Result);
+            $Row = mysqli_fetch_array($Result);
+            mysqli_free_result($Result);
     
             $Closed = false;
             if ($Row['closed'] == 1)

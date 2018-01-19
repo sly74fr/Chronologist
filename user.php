@@ -31,10 +31,10 @@
 require_once("design.inc.php");
 require_once("user.inc.php");
 
+global $Connection;
 
 // TODO : Be able to manage multiple group for one user
 // TODO : For newly created user, add a checkbox to specify wether its password must generated and sent by mail.
-
 
 // Retrieve the action to perform from the URL given 'do' parameter
 $Do = $_GET['do'];
@@ -43,7 +43,7 @@ $Do = $_GET['do'];
 switch($Do)
 {
     case "user_add" :
-        ShowSecureHeader("New User", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("New User", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 		// If the logged user is an administrator or a manager, handle user creation
 		if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManagerGroup() == TRUE))
@@ -95,11 +95,11 @@ switch($Do)
 		                 FROM   `users`
 		                 WHERE  `email` = '$Email'
 		                ";
-		        $Result = mysql_query($SQL)
+		        $Result = mysqli_query($Connection, $SQL)
 		        or die("Could not execute the '$SQL' request.");
 
 		        // Test if the given e-mail address is alreadey used by another
-		        if (mysql_num_rows($Result) != 0)
+		        if (mysqli_num_rows($Result) != 0)
 		        {
 		            $_SESSION['message'] = "The e-mail address '$Email' is allready used. <BR> Please try again. <BR>";
 		        }
@@ -112,14 +112,14 @@ switch($Do)
                 {
                     // Puts the new user in the database
                     $SQL =  "INSERT INTO `users`
-                             VALUES ('',
+                             VALUES (NULL,
                                      '$Email',
                                      '$Password',
                                      '$FirstName',
                                      '$LastName',
                                       FROM_UNIXTIME('$Expiration'))
                             ";
-                    $Result = mysql_query($SQL)
+                    $Result = mysqli_query($Connection, $SQL)
                     or die("Could not execute the '$SQL' request.");
 
                     // Gets the new user UID
@@ -127,10 +127,10 @@ switch($Do)
                              FROM   `users`
                              WHERE  `email` = '$Email'
                             ";
-                    $Result = mysql_query($SQL)
+                    $Result = mysqli_query($Connection, $SQL)
                     or die("Could not execute the '$SQL' request.");
-                    $Row = mysql_fetch_array($Result);
-                    mysql_free_result($Result);
+                    $Row = mysqli_fetch_array($Result);
+                    mysqli_free_result($Result);
                     $UID = $Row['uid'];
 
                     // Puts the new UID-GID association in the database
@@ -139,13 +139,13 @@ switch($Do)
                                      '$GID',
                                      'false')
                             ";
-                    $Result = mysql_query($SQL)
+                    $Result = mysqli_query($Connection, $SQL)
                     or die("Could not execute the '$SQL' request.");
 
                     $_SESSION['message'] = "The user has been created succesfully. <BR>";
                 }
 
-				mysql_free_result($Result);
+				mysqli_free_result($Result);
 		    }
 		    else
 		    {
@@ -158,7 +158,7 @@ switch($Do)
         break;
 
     case "user_modify" :
-        ShowSecureHeader("Modify User", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Modify User", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
         $UID = putslashes($_POST['uid']);
 
 		// If the logged user is an administrator or a manager, or want to edit its own informations, handle user modification
@@ -203,11 +203,11 @@ switch($Do)
 	                 FROM   `users`
 	                 WHERE  `uid` = '$UID'
 	                ";
-	        $Result = mysql_query($SQL)
+	        $Result = mysqli_query($Connection, $SQL)
 	        or die("Could not execute the '$SQL' request.");
 
 	        // Check if the given user does not exist
-	        if (mysql_num_rows($Result) == 0)
+	        if (mysqli_num_rows($Result) == 0)
 	        {
 	            $_SESSION['message'] = "The user ID '$UID' does not exist. <BR> Please try again. <BR>";
 	        }
@@ -228,7 +228,7 @@ switch($Do)
 	                                    `expiration` =  FROM_UNIXTIME('$Expiration')
 	                             WHERE  `uid`        = '$UID'
 	                            ";
-	                    $Result = mysql_query($SQL)
+	                    $Result = mysqli_query($Connection, $SQL)
 	                    or die("Could not execute the '$SQL' request.");
 
 	                    $_SESSION['message'] = "The user has been modified succesfully. <BR>";
@@ -248,7 +248,7 @@ switch($Do)
 	                                `expiration` = '$Expiration'
 	                         WHERE  `uid`        = '$UID'
 	                        ";
-	                $Result = mysql_query($SQL)
+	                $Result = mysqli_query($Connection, $SQL)
 	                or die("Could not execute the '$SQL' request.");
 	
 	                $_SESSION['message'] = "The user has been modified succesfully. <BR>";
@@ -260,7 +260,7 @@ switch($Do)
 	        $_SESSION['message'] = "User modification is reserved to administrator and manager users. <BR> Please try again. <BR>";
 	    }
 
-        mysql_free_result($Result);
+        mysqli_free_result($Result);
 
         // Redirects to the user list
         header("Location: user.php");
@@ -270,7 +270,7 @@ switch($Do)
 
         $UID = putslashes($_POST['uid']);
 
-        ShowSecureHeader("Password Changing", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Password Changing", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         echo "
                 <FORM ACTION='user.php?do=password_update' METHOD='POST' NAME='password'>
@@ -321,11 +321,11 @@ switch($Do)
                     FROM   `users`
                     WHERE  `uid` = '$UID'
                    ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
     
             // If the user exists
-            if (mysql_num_rows($Result) == 1)
+            if (mysqli_num_rows($Result) == 1)
             {
                 // If the two given password are really the same
                 if ($ConfirmedNewPassword == $NewPassword)
@@ -335,7 +335,7 @@ switch($Do)
                             SET    `password` = '$NewPassword'
                             WHERE  `uid`      = '$UID'
                            ";
-                    $Result = mysql_query($SQL)
+                    $Result = mysqli_query($Connection, $SQL)
                     or die("Could not execute the '$SQL' request.");
                     
                     $_SESSION['message'] = "The password has been changed succesfully. <BR>";
@@ -360,7 +360,7 @@ switch($Do)
         break;
 
     default :
-        ShowSecureHeader("Users List", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Users List", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         echo "
               <TABLE BORDER='0'>
@@ -414,11 +414,11 @@ switch($Do)
 	                    FROM      users
 	                    ORDER BY  lastname, firstname
 	                   ";
-			$UserResult = mysql_query($UserSQL)
+			$UserResult = mysqli_query($Connection, $UserSQL)
 			or die("Could not execute the '$UserSQL' request.");
 
 			// For each user
-			while ($UserRow = mysql_fetch_array($UserResult))
+			while ($UserRow = mysqli_fetch_array($UserResult))
 			{
 				// Store the current user Id
 				$UID = $UserRow['uid'];
@@ -448,16 +448,16 @@ switch($Do)
 	                         AND       groups.gid      = user_groups.gid
 	                         ORDER BY  label
 	                        ";
-				$GroupResult = mysql_query($GroupSQL)
+				$GroupResult = mysqli_query($Connection, $GroupSQL)
 				or die("Could not execute the '$GroupSQL' request.");
 
 				// Displays all the found groups
-				while ($GroupRow = mysql_fetch_array($GroupResult))
+				while ($GroupRow = mysqli_fetch_array($GroupResult))
 				{
 					echo $GroupRow['label']." </BR>";
 				}
 
-				mysql_free_result($GroupResult);
+				mysqli_free_result($GroupResult);
 
 				echo "
 								</TD>
@@ -470,7 +470,7 @@ switch($Do)
 					 ";
 			}
 
-			mysql_free_result($UserResult);
+			mysqli_free_result($UserResult);
 	    }
 	    else
 	    {

@@ -27,6 +27,7 @@
  *******************************************************************************
  */
 
+require_once("design.inc.php");
 
 // Displays the common project form
 function ShowGroupFields($GID = 0)
@@ -48,10 +49,11 @@ function ShowGroupFields($GID = 0)
                 WHERE  `groups`.`gid` = '$GID'
                 AND    `user_groups`.`gid` = `groups`.`gid`
                ";
-        $Result = mysql_query($SQL)
+        global $Connection;
+        $Result = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
-        $Row = mysql_fetch_array($Result);
-        mysql_free_result($Result);
+        $Row = mysqli_fetch_array($Result);
+        mysqli_free_result($Result);
         $Label      = $Row['label'];
         $Administer = $Row['administer'];
 
@@ -90,11 +92,11 @@ function ShowGroupFields($GID = 0)
             $SQL = "SELECT *
                     FROM `users`
                    ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
 
             // Puts all the users in the pop-up
-            while ($Row = mysql_fetch_array($Result))
+            while ($Row = mysqli_fetch_array($Result))
             {
                 // Get the current user anme
                 $UID      = $Row['uid'];
@@ -112,7 +114,7 @@ function ShowGroupFields($GID = 0)
                 echo "> ".$Name."</OPTION>\n";
             }
 
-            mysql_free_result($Result);
+            mysqli_free_result($Result);
 
             echo "
                                         </SELECT>

@@ -113,7 +113,7 @@ switch($Do)
         break;
 
     default :
-        ShowSecureHeader("Statistics", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Statistics", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         echo "
                             <TABLE BORDER='0'>

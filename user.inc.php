@@ -30,6 +30,7 @@
 
 // TODO : make uneditable expiration date and checkbox for non admin users or other users than the one connected
 
+require_once("design.inc.php");
 
 // Return TRUE if the currently connected user belongs to the 'Administrator' group, FALSE otherwise
 function ConnectedUserBelongsToAdminGroup()
@@ -77,11 +78,12 @@ function GetUserName($UID = 0)
                  FROM   `users`
                  WHERE  `uid` = '$UID'
                ";
-        $Result = mysql_query($SQL)
+        global $Connection;
+        $Result = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
     
         // If the current user is not in the database anymore
-        if (mysql_num_rows($Result) <= 0)
+        if (mysqli_num_rows($Result) <= 0)
         {
             // Sets the error message
             $_SESSION['message'] = "The current user does not exist. <BR> Please try again. <BR>";
@@ -91,7 +93,7 @@ function GetUserName($UID = 0)
         else
         {
             // Otherwise computes its real name
-            $Row  = mysql_fetch_array($Result);
+            $Row  = mysqli_fetch_array($Result);
             $Name = $Row['firstname']." ".$Row['lastname'];
             if ($Name == " ")
             {
@@ -99,7 +101,7 @@ function GetUserName($UID = 0)
             }
         }
     
-        mysql_free_result($Result);
+        mysqli_free_result($Result);
     
         return $Name;
     }
@@ -110,6 +112,7 @@ function GetUserName($UID = 0)
 // Displays the common user form
 function ShowUserFields($UID = 0)
 {
+        global $Connection;
 		// TODO : Add a javascript check box to specify weither the user has an expiration date or not
 
 		// If no user was specified, show an empty form
@@ -137,12 +140,12 @@ function ShowUserFields($UID = 0)
                     FROM   `users`
                     WHERE  `uid` = '$UID'
                    ";
-			$Result = mysql_query($SQL)
+			$Result = mysqli_query($Connection, $SQL)
 			or die("Could not execute the '$SQL' request.");
 
 			// Displays all the user data
-			$Row = mysql_fetch_array($Result);
-			mysql_free_result($Result);
+			$Row = mysqli_fetch_array($Result);
+			mysqli_free_result($Result);
 
             $Email                = $Row['email'];
 
@@ -235,16 +238,16 @@ function ShowUserFields($UID = 0)
 			$SQL = "SELECT  *
                     FROM   `groups`
                    ";
-			$Result = mysql_query($SQL)
+			$Result = mysqli_query($Connection, $SQL)
 			or die("Could not execute the '$SQL' request.");
 
 			// Puts all the groups in a pop-up list
-			while ($Row = mysql_fetch_array($Result))
+			while ($Row = mysqli_fetch_array($Result))
 			{
 				echo "<OPTION VALUE='".$Row['gid']."'> ".$Row['label']."</OPTION>";
 			}
 
-			mysql_free_result($Result);
+			mysqli_free_result($Result);
 
             echo "
                                             </SELECT>

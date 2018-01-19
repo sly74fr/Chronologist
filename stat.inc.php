@@ -27,6 +27,7 @@
  *******************************************************************************
  */
 
+require_once("design.inc.php");
 
 function MyWeek($week,$year)
 {
@@ -278,12 +279,13 @@ function GetProjectTime($UID, $PID, $AfterUnixTimeStamp = 0, $BeforeUnixTimeStam
                 ";
     }
 
-    $Result = mysql_query($SQL)
+    global $Connection;
+    $Result = mysqli_query($Connection, $SQL)
     or die("Could not execute the '$SQL' request.");
-    $Row       = mysql_fetch_array($Result);
+    $Row       = mysqli_fetch_array($Result);
     $TotalTime = $Row['length'];
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $TotalTime;
 }
@@ -298,11 +300,12 @@ function GetSubProjectsCumulativeTime($UID, $PPID, $AfterUnixTimeStamp = 0, $Bef
 			FROM     projects
 			WHERE    ppid = '$PPID'
 		   ";
-	$Result = mysql_query($SQL)
+	global $Connection;
+    $Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 
 	// Puts all the sub-projects of the current sub-project in the 'to-be-returned' array
-	while ($Row = mysql_fetch_array($Result))
+	while ($Row = mysqli_fetch_array($Result))
 	{
 		// Get the current project ID
 		$PID = $Row['pid'];
@@ -334,16 +337,16 @@ function GetSubProjectsCumulativeTime($UID, $PPID, $AfterUnixTimeStamp = 0, $Bef
                     ";
         }
     
-        $TimeResult = mysql_query($SQL)
+        $TimeResult = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
-        $TimeRow    = mysql_fetch_array($TimeResult);
+        $TimeRow    = mysqli_fetch_array($TimeResult);
 		$TotalTime += $TimeRow['length'];
 
 		// Recursively do the same thing for all the sub-projects of the current project
 		$TotalTime += GetSubProjectsCumulativeTime($UID, $PID, $AfterUnixTimeStamp, $BeforeUnixTimeStamp);
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $TotalTime;
 }
@@ -379,12 +382,13 @@ function GetActivityTime($UID, $AID, $AfterUnixTimeStamp = 0, $BeforeUnixTimeSta
                 ";
     }
 
-    $Result = mysql_query($SQL)
+    global $Connection;
+    $Result = mysqli_query($Connection, $SQL)
     or die("Could not execute the '$SQL' request.");
-    $Row       = mysql_fetch_array($Result);
+    $Row       = mysqli_fetch_array($Result);
     $TotalTime = $Row['length'];
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $TotalTime;
 }
@@ -399,11 +403,12 @@ function GetSubActivitiesCumulativeTime($UID, $PAID, $AfterUnixTimeStamp = 0, $B
 			FROM     activities
 			WHERE    paid = '$PAID'
 		   ";
-	$Result = mysql_query($SQL)
+	global $Connection;
+    $Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 
 	// Puts all the sub-activities of the current sub-activity in the 'to-be-returned' array
-	while ($Row = mysql_fetch_array($Result))
+	while ($Row = mysqli_fetch_array($Result))
 	{
 		// Get the current actitivty ID
 		$AID = $Row['aid'];
@@ -435,16 +440,16 @@ function GetSubActivitiesCumulativeTime($UID, $PAID, $AfterUnixTimeStamp = 0, $B
                     ";
         }
 
-        $TimeResult = mysql_query($SQL)
+        $TimeResult = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
-        $TimeRow    = mysql_fetch_array($TimeResult);
+        $TimeRow    = mysqli_fetch_array($TimeResult);
 		$TotalTime += $TimeRow['length'];
 
 		// Recursively do the same thing for all the sub-activities of the current activity
 		$TotalTime += GetSubActivitiesCumulativeTime($UID, $AID, $AfterUnixTimeStamp, $BeforeUnixTimeStamp);
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $TotalTime;
 }

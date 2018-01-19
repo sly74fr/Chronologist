@@ -30,6 +30,8 @@
 
 // TODO : Show only user and group activities
 
+require_once("design.inc.php");
+
 class Activity
 {
     var $aid;           // Activity identifier
@@ -74,10 +76,11 @@ class Activity
             $SQL = "SELECT *
                     FROM   activities
                     WHERE  aid = '$LocalAID'";
-            $Result = mysql_query($SQL)
+            global $Connection;
+            $Result = mysqli_query($Connection, $SQL)
                 or die("Could not execute the '$SQL' request.");
-            $Row = mysql_fetch_array($Result);
-            mysql_free_result($Result);
+            $Row = mysqli_fetch_array($Result);
+            mysqli_free_result($Result);
             $Label = $Row['label'];
             
             // If its the first loop
@@ -117,10 +120,11 @@ class Activity
             $SQL = "SELECT  DISTINCT *
                     FROM   `activities`
                     WHERE  `aid` = '$AID'";
-            $Result = mysql_query($SQL)
+            global $Connection;
+            $Result = mysqli_query($Connection, $SQL)
                 or die("Could not execute the '$SQL' request.");
-            $Row = mysql_fetch_array($Result);
-            mysql_free_result($Result);
+            $Row = mysqli_fetch_array($Result);
+            mysqli_free_result($Result);
             
             $Parent = $Row['paid'];
             $Label  = $Row['label'];
@@ -208,11 +212,12 @@ class Activity
                 FROM     activities
                 WHERE    paid = '$PAID'
                 ORDER BY label";
-        $Result = mysql_query($SQL)
-            or die("Could not execute the '$SQL' request.");
+        global $Connection;
+        $Result = mysqli_query($Connection, $SQL)
+        or die("Could not execute the '$SQL' request.");
         
         // Puts all the sub-activities of the current sub-activity in the 'to-be-returned' array
-        while ($Row = mysql_fetch_array($Result))
+        while ($Row = mysqli_fetch_array($Result))
         {
             // Get the current activity ID
             $AID      = $Row['aid'];
@@ -234,7 +239,7 @@ class Activity
             $Array = $Array + GetSubActivities($AID, $SubLabel);
         }
         
-        mysql_free_result($Result);
+        mysqli_free_result($Result);
         
         return $Array;
     }
@@ -246,21 +251,23 @@ class Activity
                 SET     `label` = '$this->label',
                         `paid`  = '$this->paid',
                 WHERE  `aid`   = '$this->aid'";
-        $Result = mysql_query($SQL)
-            or die("Could not execute the '$SQL' request.");
+        global $Connection;
+        $Result = mysqli_query($Connection, $SQL)
+        or die("Could not execute the '$SQL' request.");
     }
     
     function insert()
     {
         // TODO : Checks that the given activities label doesn't already exists in the database for the selected sub-activities
         $SQL = "INSERT INTO `activities`
-                VALUES ('',
+                VALUES (NULL,
                         '$this->paid',
                         '$this->label')";
-        $Result = mysql_query($SQL)
-            or die("Could not execute the '$SQL' request.");
+        global $Connection;
+        $Result = mysqli_query($Connection, $SQL)
+        or die("Could not execute the '$SQL' request.");
         
-        $this->aid = mysql_insert_id();
+        $this->aid = mysqli_insert_id();
     }
 }
 
@@ -282,10 +289,11 @@ function GetActivityCompleteLabel($AID = 0)
 				FROM   activities
 				WHERE  aid = '$LocalAID'
 			   ";
-		$Result = mysql_query($SQL)
+        global $Connection;
+		$Result = mysqli_query($Connection, $SQL)
 		or die("Could not execute the '$SQL' request.");
-		$Row = mysql_fetch_array($Result);
-		mysql_free_result($Result);
+		$Row = mysqli_fetch_array($Result);
+		mysqli_free_result($Result);
 		$Label = $Row['label'];
 
 		// If its the first loop
@@ -321,11 +329,12 @@ function GetGroupSubActivities($GID, $PAID = 0, $Label = "")
 			AND      group_activities.gid  = '$GID'
 			ORDER BY label
 		   ";
-	$Result = mysql_query($SQL)
+    global $Connection;
+	$Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 
 	// Puts all the sub-activities of the current sub-activity in the 'to-be-returned' array
-	while ($Row = mysql_fetch_array($Result))
+	while ($Row = mysqli_fetch_array($Result))
 	{
 		// Get the current activity ID
 		$AID      = $Row['aid'];
@@ -347,7 +356,7 @@ function GetGroupSubActivities($GID, $PAID = 0, $Label = "")
 		$Array = $Array + GetGroupSubActivities($GID, $AID, $SubLabel);
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $Array;
 }
@@ -365,11 +374,12 @@ function GetUserSubActivities($UID, $PAID = 0, $Label = "")
 			AND      user_activities.uid  = '$UID'
 			ORDER BY label
 		   ";
-	$Result = mysql_query($SQL)
+    global $Connection;
+	$Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 
 	// Puts all the sub-activities of the current sub-activity in the 'to-be-returned' array
-	while ($Row = mysql_fetch_array($Result))
+	while ($Row = mysqli_fetch_array($Result))
 	{
 		// Get the current activity ID
 		$AID      = $Row['aid'];
@@ -391,7 +401,7 @@ function GetUserSubActivities($UID, $PAID = 0, $Label = "")
 		$Array = $Array + GetUserSubActivities($UID, $AID, $SubLabel);
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $Array;
 }
@@ -412,11 +422,12 @@ function GetSubActivities($PAID = 0, $Label = "", $ShouldIncludeNone = true)
              WHERE    paid = '$PAID'
 		     ORDER BY label
 		    ";
-	$Result = mysql_query($SQL)
+    global $Connection;
+	$Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 
 	// Puts all the sub-activities of the current sub-activity in the 'to-be-returned' array
-	while ($Row = mysql_fetch_array($Result))
+	while ($Row = mysqli_fetch_array($Result))
 	{
 		// Get the current activity ID
 		$AID      = $Row['aid'];
@@ -438,7 +449,7 @@ function GetSubActivities($PAID = 0, $Label = "", $ShouldIncludeNone = true)
 		$Array = $Array + GetSubActivities($AID, $SubLabel);
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $Array;
 }
@@ -463,10 +474,11 @@ function ShowActivityFields($AID = 0)
 				FROM   `activities`
 				WHERE  `aid` = '$AID'
 			   ";
-		$Result = mysql_query($SQL)
+        global $Connection;
+		$Result = mysqli_query($Connection, $SQL)
 		or die("Could not execute the '$SQL' request.");
-		$Row = mysql_fetch_array($Result);
-		mysql_free_result($Result);
+		$Row = mysqli_fetch_array($Result);
+		mysqli_free_result($Result);
 
 		$Parent = $Row['paid'];
 		$Label  = $Row['label'];

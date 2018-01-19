@@ -27,9 +27,7 @@
  *******************************************************************************
  */
 
-
 require_once("design.inc.php");
-
 
 // Retrieve the action to perform from the URL given 'do' parameter
 $Do  = $_GET['do'];
@@ -57,14 +55,14 @@ switch($Do)
 	                    FROM   `users`
 	                    WHERE  `email` = '$Email'
 	                   ";
-	        $UserResult = mysql_query($UserSQL)
+	        $UserResult = mysqli_query($Connection, $UserSQL)
 	        or die("Could not execute the '$UserSQL' request.");
 
 	        // If the user exists
-	        if (mysql_num_rows($UserResult) == 1)
+	        if (mysqli_num_rows($UserResult) == 1)
 	        {
 				// Remember the user ID
-				$UserArray  = mysql_fetch_array($UserResult);
+				$UserArray  = mysqli_fetch_array($UserResult);
 				$UID        = $UserArray['uid'];
 				$Expiration = $UserArray['timestamp'];
 
@@ -77,29 +75,29 @@ switch($Do)
 		                            WHERE  `uid`      = '$UID'
 		                            AND    `password` = '$Password'
 		                           ";
-		            $PasswordResult = mysql_query($PasswordSQL)
+		            $PasswordResult = mysqli_query($Connection, $PasswordSQL)
 		            or die("Could not execute the '$PasswordSQL' request.");
 
 		            // If the password is correct
-		            if (mysql_num_rows($PasswordResult) == 1)
+		            if (mysqli_num_rows($PasswordResult) == 1)
 		            {
 						// Get all the user's groups from the database
 						$GroupSQL = "SELECT *
 		                             FROM   `user_groups`
 		                             WHERE  `uid` = '$UID'
 		                            ";
-						$GroupResult = mysql_query($GroupSQL)
+						$GroupResult = mysqli_query($Connection, $GroupSQL)
 						or die("Could not execute the '$GroupSQL' request.");
 
 						// Put all the groups of the current user in the array
 						$Array = array();
-						while ($GroupRow = mysql_fetch_array($GroupResult))
+						while ($GroupRow = mysqli_fetch_array($GroupResult))
 						{
 							// Put the current group ID in the array
 							$Array[] = $GroupRow['gid'];
 						}
 
-				        mysql_free_result($GroupResult);
+				        mysqli_free_result($GroupResult);
 
 						// Set session variables accordinally to enable authenticated mode
 						$_SESSION['gid'] = $Array;
@@ -110,7 +108,7 @@ switch($Do)
 		                $_SESSION['message'] = "You just enter a wrong username or password. <BR> Please try again. <BR>";
 		            }
 
-			        mysql_free_result($PasswordResult);
+			        mysqli_free_result($PasswordResult);
 		        }
 		        else // If the user account has expired
 		        {
@@ -122,14 +120,14 @@ switch($Do)
 			                FROM   `users`
 			                WHERE  `uid` = '1'
 			               ";
-			        $Result = mysql_query($SQL)
+			        $Result = mysqli_query($Connection, $SQL)
 			        or die("Could not execute the '$SQL' request.");
 
 			        // If the 'admin' user exists
-			        if (mysql_num_rows($Result) == 1)
+			        if (mysqli_num_rows($Result) == 1)
 			        {
 						// Remember the user ID
-						$Array = mysql_fetch_array($Result);
+						$Array = mysqli_fetch_array($Result);
 	
 			            $_SESSION['message'] = "Your account has expired. <BR> Please contact <a href='mailto:".$Array['email']."'>".$Array['firstname']
 			                                  ." ".$Array['lastname']."</a>.<BR>";
@@ -139,7 +137,7 @@ switch($Do)
 			            $_SESSION['message'] = "Your account has expired. <BR> Please contact your Chronologist administrator.<BR>";
 					}
 
-			        mysql_free_result($Result);
+			        mysqli_free_result($Result);
 		        }
 	        }
 	        else // If the user does not exist
@@ -147,7 +145,7 @@ switch($Do)
 	            $_SESSION['message'] = "You just enter a wrong username or password. <BR> Please try again. <BR>";
 	        }
 
-	        mysql_free_result($UserResult);
+	        mysqli_free_result($UserResult);
 	    }
 	    else
 	    {

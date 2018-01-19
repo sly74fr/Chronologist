@@ -32,7 +32,6 @@ require_once("design.inc.php");
 require_once("group.inc.php");
 require_once("user.inc.php");
 
-
 // If the logged user is an administrator or a manager, handle group modification
 if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManagerGroup() == TRUE))
 {
@@ -42,7 +41,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 	switch($Do)
 	{
 	    case "add" :
-	        ShowSecureHeader("New Group", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+	        ShowSecureHeader("New Group", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 	        ShowGroupFields();
 
@@ -68,23 +67,23 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 		                 FROM   `groups`
 		                 WHERE  `label` = '$Label'
 		                ";
-		        $Result = mysql_query($SQL)
+		        $Result = mysqli_query($Connection, $SQL)
 		        or die("Could not execute the '$SQL' request.");
-		        $RowNumber = mysql_num_rows($Result);
-				mysql_free_result($Result);
+		        $RowNumber = mysqli_num_rows($Result);
+				mysqli_free_result($Result);
 
 		        // If the given group does not exist
 		        if ($RowNumber == 0)
 		        {
 		            // Puts the given group in the database
 		            $SQL =  "INSERT INTO `groups`
-		                     VALUES ('',
+		                     VALUES (NULL,
 		                             '$Label')
 		                    ";
-		            $Result = mysql_query($SQL)
+		            $Result = mysqli_query($Connection, $SQL)
 		            or die("Could not execute the '$SQL' request.");
 
-		            $GID = mysql_insert_id();
+		            $GID = mysqli_insert_id();
 
 		            // Puts the link between the newly created group and the logged user (as this group administrator) in the database
 		            $SQL =  "INSERT INTO `user_groups`
@@ -92,7 +91,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 		                             '$GID',
 		                              1)
 		                    ";
-		            $Result = mysql_query($SQL)
+		            $Result = mysqli_query($Connection, $SQL)
 		            or die("Could not execute the '$SQL' request.");
 
 		            $_SESSION['message'] = "The group has been created succesfully. <BR>";
@@ -108,7 +107,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 	        break;
 
 	    case "link" :
-	        ShowSecureHeader("New User-Group Association", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+	        ShowSecureHeader("New User-Group Association", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 	        if (ConnectedUserBelongsToAdminGroup() == TRUE)
 			{
@@ -127,16 +126,16 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 				$SQL = "SELECT  *
 	                    FROM   `users`
 	                   ";
-				$Result = mysql_query($SQL)
+				$Result = mysqli_query($Connection, $SQL)
 				or die("Could not execute the '$SQL' request.");
 
 				// Puts all the groups in a pop-up list
-				while ($Row = mysql_fetch_array($Result))
+				while ($Row = mysqli_fetch_array($Result))
 				{
 					echo "<OPTION VALUE='".$Row['uid']."'> ".htmlentities(GetUserName($Row['uid']))." </OPTION>";
 				}
 
-				mysql_free_result($Result);
+				mysqli_free_result($Result);
 
 	            echo "
 	                                            </SELECT>
@@ -154,16 +153,16 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 				$SQL = "SELECT  *
 	                    FROM   `groups`
 	                   ";
-				$Result = mysql_query($SQL)
+				$Result = mysqli_query($Connection, $SQL)
 				or die("Could not execute the '$SQL' request.");
 
 				// Puts all the groups in a pop-up list
-				while ($Row = mysql_fetch_array($Result))
+				while ($Row = mysqli_fetch_array($Result))
 				{
 					echo "<OPTION VALUE='".$Row['gid']."'> ".htmlentities($Row['label'])." </OPTION>";
 				}
 
-				mysql_free_result($Result);
+				mysqli_free_result($Result);
 
 	            echo "
 	                                            </SELECT>
@@ -213,9 +212,9 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 	                WHERE  `uid` = '$UID'
 	                AND    `gid` = '$GID'
 	               ";
-			$Result = mysql_query($SQL)
+			$Result = mysqli_query($Connection, $SQL)
 			or die("Could not execute the '$SQL' request.");
-			$NumRows = mysql_num_rows($Result);
+			$NumRows = mysqli_num_rows($Result);
 			if ($NumRow != 0)
 			{
 				$_SESSION['message'] = "This User-Group association already exists. <BR> Please try again. <BR>";
@@ -235,7 +234,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
                                      '$GID',
                                      '$Administer')
                             ";
-                    $Result = mysql_query($SQL)
+                    $Result = mysqli_query($Connection, $SQL)
                     or die("Could not execute the '$SQL' request.");
     
                     $_SESSION['message'] = "The user-group association has been created succesfully. <BR>";
@@ -247,7 +246,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 	        break;
 
 	    case "modify" :
-	        ShowSecureHeader("Modify Group", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+	        ShowSecureHeader("Modify Group", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 	        ShowGroupFields(putslashes($_POST['gid']));
 
@@ -275,11 +274,11 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 		                 FROM   `groups`
 		                 WHERE  `gid`= '$GID'
 		                ";
-		        $Result = mysql_query($SQL)
+		        $Result = mysqli_query($Connection, $SQL)
 		        or die("Could not execute the '$SQL' request.");
 
 		        // If the given group does not exist
-		        if (mysql_num_rows($Result)== 0)
+		        if (mysqli_num_rows($Result)== 0)
 		        {
 		            $_SESSION['message'] = "The group ID '$GID' does not exist. <BR> Please try again. <BR>";
 		        }
@@ -291,7 +290,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 		                     WHERE  `gid`        = '$GID'
 		                     AND    `uid`        = '$UID'
 		                    ";
-		            $Result = mysql_query($SQL)
+		            $Result = mysqli_query($Connection, $SQL)
 		            or die("Could not execute the '$SQL' request.");
 
 		            // Change the given group label in the database
@@ -299,13 +298,13 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 		                     SET    `label` = '$Label'
 		                     WHERE  `gid`   = '$GID'
 		                    ";
-		            $Result = mysql_query($SQL)
+		            $Result = mysqli_query($Connection, $SQL)
 		            or die("Could not execute the '$SQL' request.");
 
 		            $_SESSION['message'] = "The group has been modified succesfully. <BR>";
 		        }
 
-				mysql_free_result($Result);
+				mysqli_free_result($Result);
 		    }
 		    else
 		    {
@@ -317,7 +316,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 	        break;
 
 	    default :
-	        ShowSecureHeader("Groups List", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+	        ShowSecureHeader("Groups List", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 	        echo "
 	              <TABLE BORDER='0'>
@@ -346,11 +345,11 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 			$SQL = "SELECT *
 	                FROM   `groups`
 	               ";
-			$Result = mysql_query($SQL)
+			$Result = mysqli_query($Connection, $SQL)
 			or die("Could not execute the '$SQL' request.");
 
 			// For each group
-			while ($Row = mysql_fetch_array($Result))
+			while ($Row = mysqli_fetch_array($Result))
 			{
 				// Displays its label
 				$Label = $Row['label'];
@@ -371,7 +370,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 					 ";
 			}
 
-			mysql_free_result($Result);
+			mysqli_free_result($Result);
 
 	        echo "
                     </TABLE>

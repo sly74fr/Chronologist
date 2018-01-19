@@ -30,6 +30,7 @@
 
 // TODO : Cautious use of '<INPUT TYPE="FILE" NAME="hello">' for restoring a backup ???
 
+require_once("design.inc.php");
 
 // If the database configuration file already exists
 if (file_exists("db.inc.php"))

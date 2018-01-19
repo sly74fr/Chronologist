@@ -30,6 +30,8 @@
 
 // TODO : Show only user and group projects
 
+require_once("design.inc.php");
+
 class Project
 {
     var $pid;           // Activity identifier
@@ -75,10 +77,11 @@ class Project
                     FROM   projects
                     WHERE  pid = '$LocalPID'
                    ";
-            $Result = mysql_query($SQL)
+            global $Connection;
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
-            $Row = mysql_fetch_array($Result);
-            mysql_free_result($Result);
+            $Row = mysqli_fetch_array($Result);
+            mysqli_free_result($Result);
             $Label = $Row['label'];
     
             // If its the first loop
@@ -121,10 +124,11 @@ class Project
                     FROM   `projects`
                     WHERE  `pid` = '$PID'
                    ";
-            $Result = mysql_query($SQL)
+            global $Connection;
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
-            $Row = mysql_fetch_array($Result);
-            mysql_free_result($Result);
+            $Row = mysqli_fetch_array($Result);
+            mysqli_free_result($Result);
     
             $Parent = $Row['ppid'];
             $Label  = $Row['label'];
@@ -237,10 +241,11 @@ function GetProjectCompleteLabel($PID = 0)
 				FROM   projects
 				WHERE  pid = '$LocalPID'
 			   ";
-		$Result = mysql_query($SQL)
+		global $Connection;
+        $Result = mysqli_query($Connection, $SQL)
 		or die("Could not execute the '$SQL' request.");
-		$Row = mysql_fetch_array($Result);
-		mysql_free_result($Result);
+		$Row = mysqli_fetch_array($Result);
+		mysqli_free_result($Result);
 		$Label = $Row['label'];
 
 		// If its the first loop
@@ -276,11 +281,12 @@ function GetGroupSubProjects($GID, $PPID = 0, $Label = "")
 			AND      group_projects.gid  = '$GID'
 			ORDER BY label
 		   ";
-	$Result = mysql_query($SQL)
+	global $Connection;
+    $Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 
 	// Puts all the sub-projects of the current sub-project in the 'to-be-returned' array
-	while ($Row = mysql_fetch_array($Result))
+	while ($Row = mysqli_fetch_array($Result))
 	{
 		// Get the current project ID
 		$PID      = $Row['pid'];
@@ -302,7 +308,7 @@ function GetGroupSubProjects($GID, $PPID = 0, $Label = "")
 		$Array = $Array + GetGroupSubProjects($GID, $PID, $SubLabel);
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $Array;
 }
@@ -320,11 +326,12 @@ function GetUserSubProjects($UID, $PPID = 0, $Label = "")
 			AND      user_projects.uid  = '$UID'
 			ORDER BY label
 		   ";
-	$Result = mysql_query($SQL)
+	global $Connection;
+    $Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 
 	// Puts all the sub-projects of the current sub-project in the 'to-be-returned' array
-	while ($Row = mysql_fetch_array($Result))
+	while ($Row = mysqli_fetch_array($Result))
 	{
 		// Get the current project ID
 		$PID      = $Row['pid'];
@@ -346,7 +353,7 @@ function GetUserSubProjects($UID, $PPID = 0, $Label = "")
 		$Array = $Array + GetUserSubProjects($UID, $PID, $SubLabel);
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $Array;
 }
@@ -375,11 +382,12 @@ function GetSubProjects($ActiveOnly = false, $PPID = 0, $Label = "")
 
 	$SQL .= "ORDER BY label
 		    ";
-	$Result = mysql_query($SQL)
+	global $Connection;
+    $Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 
 	// Puts all the sub-projects of the current sub-project in the 'to-be-returned' array
-	while ($Row = mysql_fetch_array($Result))
+	while ($Row = mysqli_fetch_array($Result))
 	{
 		// Get the current project ID
 		$PID      = $Row['pid'];
@@ -401,7 +409,7 @@ function GetSubProjects($ActiveOnly = false, $PPID = 0, $Label = "")
 		$Array = $Array + GetSubProjects($ActiveOnly, $PID, $SubLabel);
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	return $Array;
 }
@@ -427,10 +435,11 @@ function ShowProjectFields($PID = 0)
 				FROM   `projects`
 				WHERE  `pid` = '$PID'
 			   ";
-		$Result = mysql_query($SQL)
+		global $Connection;
+        $Result = mysqli_query($Connection, $SQL)
 		or die("Could not execute the '$SQL' request.");
-		$Row = mysql_fetch_array($Result);
-		mysql_free_result($Result);
+		$Row = mysqli_fetch_array($Result);
+		mysqli_free_result($Result);
 
 		$Parent = $Row['ppid'];
 		$Label  = $Row['label'];

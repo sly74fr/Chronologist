@@ -33,7 +33,6 @@ require_once("task.inc.php");
 require_once("project.inc.php");
 require_once("stat.inc.php");
 
-
 // Retrieve the month and the year to stat
 $UserMonth = putslashes($_POST['month']);
 $UserYear  = putslashes($_POST['year']);
@@ -55,13 +54,13 @@ if ($CurrentYear == 0)
 {
     $_SESSION['message'] = "The year parameter is missing. <BR> Please try again. <BR>";
     header("Location: stat.php");
-    break;
+    exit();
 }
 else if (($CurrentMonth < 1) || ($CurrentMonth > 12))
 {
     $_SESSION['message'] = "The month parameter is missing or seems wrong. <BR> Please try again. <BR>";
     header("Location: stat.php");
-    break;
+    exit();
 }
 
 $PreviousMonth = ($CurrentMonth == 1 ? 12 : $CurrentMonth - 1);
@@ -74,7 +73,7 @@ $FirstDay = $Period['start'];
 $LastDay  = $Period['end'];
 
 
-ShowSecureHeader("Monthly Statistics", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+ShowSecureHeader("Monthly Statistics", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 echo "
             <BR/><BR/>
@@ -206,11 +205,11 @@ if ($TotalTime != 0)
             }
         }
     
-        $Result = mysql_query($SQL)
+        $Result = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
     
         // For each projects
-        while ($Row = mysql_fetch_array($Result))
+        while ($Row = mysqli_fetch_array($Result))
         {
             // Displays its label and total duration
             $Duration   = $Row['length'];
@@ -239,7 +238,7 @@ if ($TotalTime != 0)
             }
         }
 
-        mysql_free_result($Result);
+        mysqli_free_result($Result);
     }
 
     echo "

@@ -27,9 +27,6 @@
  *******************************************************************************
  */
 
-
-require_once("user.inc.php");
-
 $Connection = null;
 
 // If the database configuration file does not exist
@@ -44,20 +41,26 @@ else
 	require_once("db.inc.php");
 
     // Set default charset ti UTF8
-    ini_set("default_charset", "utf8");
+    ini_set("default_charset", "utf-8");
 
 	// Connect to the database server
 	global $Connection;
-	$Connection = mysql_connect($Host, $User, $Password)
+	$Connection = mysqli_connect($Host, $User, $Password, $Database)
 	or die("Could not connect to database server.");
 
-    mysql_set_charset('utf8', $Connection);
+    if (mysqli_connect_errno()) {
+        printf("MySQL connection failure: %s</br>", mysqli_connect_error());
+        exit();
+    }
+    
+    //printf("Statut du système : %s\n", mysqli_stat($Connection));
+
+    mysqli_set_charset($Connection, 'utf8');
 
 	// Connect to the specified database
-	$DB = mysql_select_db($Database, $Connection)
+	$DB = mysqli_select_db($Connection, $Database)
 	or die("Could not select the database.");
 }
-
 
 // Session handling.
 session_start();
@@ -118,6 +121,7 @@ function ShowHeader($Title, $URL = "index.php")
     }
     else // If someone is already connected
     {
+		require_once("user.inc.php");
 		$_SESSION['name'] = GetUserName($UID);
 		if ($_SESSION['name'] == "")
 		{
@@ -235,6 +239,8 @@ function ShowSecureHeader($Title, $URL)
 // Displays the common page footer
 function ShowFooter()
 {
+	global $Connection;
+
 	// Aesthetic Attributes
 	$FOOTER_BACKGROUNG_COLOR = "BLACK";
 	$FOOTER_FONT_COLOR       = "WHITE";
@@ -256,9 +262,10 @@ function ShowFooter()
 			ORDER BY `vid`
 			DESC
 		   ";
-	$Result = mysql_query($SQL)
+    global $Connection;
+	$Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
-	$Row = mysql_fetch_array($Result);
+	$Row = mysqli_fetch_array( $Result);
 
 	// If a version number was in the database
 	if ($Result > 0)
@@ -271,7 +278,7 @@ function ShowFooter()
 		echo "!!! Unknow Version !!!";
 	}
 
-	mysql_free_result($Result);
+	mysqli_free_result($Result);
 
 	echo "
                     </FONT>
@@ -283,8 +290,7 @@ function ShowFooter()
           ";
 
 	// Database disconnection
-	global $Connection;
-	mysql_close($Connection) ;
+	mysqli_close($Connection) ;
 }
 
 

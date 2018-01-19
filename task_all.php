@@ -33,7 +33,6 @@ require_once("task.inc.php");
 require_once("activity.inc.php");
 require_once("project.inc.php");
 
-
 // Retrieve the action to perform from the URL given 'do' parameter
 $Do = $_GET['do'];
 
@@ -41,7 +40,7 @@ $Do = $_GET['do'];
 switch($Do)
 {
     case "add" :
-        ShowSecureHeader("Task Creation", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Task Creation", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         ShowTaskFields(0, putslashes($_POST['timestamp']));
 
@@ -49,7 +48,7 @@ switch($Do)
         break;
 
     case "add_next" :
-        ShowSecureHeader("Task Creation", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Task Creation", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         ShowTaskFields(0, $_GET['timestamp']);
 
@@ -90,14 +89,14 @@ switch($Do)
             // Insert the new task in the database
             $SQL =  "INSERT INTO `tasks`
                      VALUES (
-                             '',
+                             NULL,
                              '$SessionUID',
                              '$TaskProject',
                              '$TaskLabel',
                               FROM_UNIXTIME('$TaskBeginning'),
                              '$TaskDuration')
                     ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
 
             $_SESSION['message'] = "The task has been created succesfully. <BR>";
@@ -108,7 +107,7 @@ switch($Do)
         break;
 
     case "modify" :
-        ShowSecureHeader("Task Modification", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Task Modification", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         ShowTaskFields(putslashes($_POST['tid']), 0);
 
@@ -153,7 +152,7 @@ switch($Do)
 	                           `duration`  =  '$TaskDuration'
 	                       WHERE `tid` = '$TID'
                     ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
 
             $_SESSION['message'] = "The task has been updated succesfully. <BR>";
@@ -171,10 +170,10 @@ switch($Do)
     			FROM  `tasks`
     			WHERE `uid` = '$SessionUID'
 		       ";
-		$Result = mysql_query($SQL)
+		$Result = mysqli_query($Connection, $SQL)
 		or die("Could not execute the '$SQL' request.");
-        $NumRows = mysql_num_rows($Result);
-		mysql_free_result($Result);
+        $NumRows = mysqli_num_rows($Result);
+		mysqli_free_result($Result);
 
 		// If there is no tasks for the currently logged user
 		if (($NumRows == 0))
@@ -183,7 +182,7 @@ switch($Do)
 			$_SESSION['message'] .= "There is no tasks for the currently logged user !";
 		}
 
-        ShowSecureHeader("Task List", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Task List", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
         echo "
               <TABLE BORDER='0'>
                   <TR ALIGN='CENTER'>
@@ -233,11 +232,11 @@ switch($Do)
 		     			ORDER BY timestamp DESC
 			    	   ";
 
-			$TaskResult = mysql_query($TaskSQL)
+			$TaskResult = mysqli_query($Connection, $TaskSQL)
 			or die("Could not execute the '$TaskSQL' request.");
 
 			// Displays all the projects
-			while ($TaskRow = mysql_fetch_array($TaskResult))
+			while ($TaskRow = mysqli_fetch_array($TaskResult))
 			{
 				$TID           = $TaskRow['tid'];
 				$TaskLabel     = $TaskRow['label'];
@@ -274,7 +273,7 @@ switch($Do)
 				 ";
 			}
 
-			mysql_free_result($TaskResult);
+			mysqli_free_result($TaskResult);
 
 	        echo "
 	                                </TABLE>

@@ -27,11 +27,12 @@
  *******************************************************************************
  */
 
+require_once("design.inc.php");
 
 function CreateUserAndDatabase($MySqlServerAddress, $RootName, $RootPassword, $WebServerName , $DatabaseName, $UserName, $UserPassword)
 {
 	// Try to connect to the database server as 'root'
-	$Connection = mysql_connect($MySqlServerAddress, $RootName, $RootPassword);
+	$Connection = mysqli_connect($MySqlServerAddress, $RootName, $RootPassword);
 	if ($Connection == FALSE)
 	{
 		$_SESSION['message'] = "Could not connect to the '$MySqlServerAddress' database server. <BR> Verify the database server host name, user name and password. <BR>";
@@ -39,7 +40,7 @@ function CreateUserAndDatabase($MySqlServerAddress, $RootName, $RootPassword, $W
 	}
 
 	// Try to connect to the 'mysql' database
-	$DB = mysql_select_db("mysql", $Connection);
+	$DB = mysqli_select_db("mysql", $Connection);
 	if ($DB == FALSE)
 	{
 		$_SESSION['message'] = "Could not connect to the 'mysql' database. <BR> Verify the database name. <BR>";
@@ -50,7 +51,8 @@ function CreateUserAndDatabase($MySqlServerAddress, $RootName, $RootPassword, $W
 
 	// New database creation
 	$SQL    = "CREATE DATABASE $DatabaseName";
-	$Result = mysql_query($SQL)
+	global $Connection;
+    $Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 	if ($Result = FALSE)
 	{
@@ -65,7 +67,7 @@ function CreateUserAndDatabase($MySqlServerAddress, $RootName, $RootPassword, $W
 	                 TO $UserName@$WebServerName
 	                 IDENTIFIED BY '$UserPassword'
 	                 WITH GRANT OPTION";
-	$Result = mysql_query($SQL)
+	$Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 	if ($Result = FALSE)
 	{
@@ -75,7 +77,7 @@ function CreateUserAndDatabase($MySqlServerAddress, $RootName, $RootPassword, $W
 
 	// Flush the privileges to 'activate' the new user
 	$SQL    = "FLUSH PRIVILEGES";
-	$Result = mysql_query($SQL)
+	$Result = mysqli_query($Connection, $SQL)
 	or die("Could not execute the '$SQL' request.");
 	if ($Result = FALSE)
 	{
@@ -83,14 +85,14 @@ function CreateUserAndDatabase($MySqlServerAddress, $RootName, $RootPassword, $W
 		return FALSE;
 	}
 
-	mysql_close();
+	mysqli_close();
 	return TRUE;
 }
 
 function CreateConfigFile($MySqlServerAddress, $UserName, $UserPassword, $DatabaseName)
 {
 	// Try to connect to the database server as 'user'
-	$Connection = mysql_connect($MySqlServerAddress, $UserName, $UserPassword);
+	$Connection = mysqli_connect($MySqlServerAddress, $UserName, $UserPassword);
 	if ($Connection == FALSE)
 	{
 		$_SESSION['message'] = "1 Could not connect to the '$MySqlServerAddress' database server. <BR> Verify the database server host name, user name and password. <BR>";
@@ -98,7 +100,7 @@ function CreateConfigFile($MySqlServerAddress, $UserName, $UserPassword, $Databa
 	}
 
 	// Try to connect to the new database
-	$DB = mysql_select_db($DatabaseName, $Connection);
+	$DB = mysqli_select_db($DatabaseName, $Connection);
 	if ($DB == FALSE)
 	{
 		$_SESSION['message'] = "1 Could not connect to the '$DatabaseName' database. <BR> Verify the database name. <BR>";
@@ -132,14 +134,14 @@ function CreateConfigFile($MySqlServerAddress, $UserName, $UserPassword, $Databa
 	}
 
 	fclose($FD);
-	mysql_close();
+	mysqli_close();
 	return TRUE;
 }
 
 function PopulateDatabase($MySqlServerAddress, $UserName, $UserPassword, $DatabaseName, $AdminEmail, $AdminPassword, $AdminFirstName, $AdminLastName)
 {
 	// Try to connect to the database server as 'user'
-	$Connection = mysql_connect($MySqlServerAddress, $UserName, $UserPassword);
+	$Connection = mysqli_connect($MySqlServerAddress, $UserName, $UserPassword);
 	if ($Connection == FALSE)
 	{
 		$_SESSION['message'] = "Could not connect to the '$MySqlServerAddress' database server. <BR> Verify the database server host name, user name and password. <BR>";
@@ -147,7 +149,7 @@ function PopulateDatabase($MySqlServerAddress, $UserName, $UserPassword, $Databa
 	}
 
 	// Try to connect to the new database
-	$DB = mysql_select_db($DatabaseName, $Connection);
+	$DB = mysqli_select_db($DatabaseName, $Connection);
 	if ($DB == FALSE)
 	{
 		$_SESSION['message'] = "Could not connect to the '$DatabaseName' database. <BR> Verify the database name. <BR>";
@@ -161,7 +163,7 @@ function PopulateDatabase($MySqlServerAddress, $UserName, $UserPassword, $Databa
 	$Queries[] = "CREATE TABLE versions (vid   integer NOT NULL auto_increment,
 	                                     label text    NOT NULL,
 	                                     PRIMARY KEY (vid)) TYPE=MyISAM";
-	$Queries[] = "INSERT INTO  versions VALUES ('', 'v0.5')";
+	$Queries[] = "INSERT INTO  versions VALUES (NULL, 'v0.5')";
 
 	// 'users' table creation
 	$Queries[] = "DROP   TABLE IF EXISTS users";
@@ -172,7 +174,7 @@ function PopulateDatabase($MySqlServerAddress, $UserName, $UserPassword, $Databa
 	                                  lastname   tinytext,
 	                                  expiration datetime NOT NULL,
 	                                  PRIMARY KEY (uid)) TYPE=MyISAM";
-	$Queries[] = "INSERT INTO  users VALUES ('', '$AdminEmail', PASSWORD('$AdminPassword'), '$AdminFirstName', '$AdminLastName', FROM_UNIXTIME(0))";
+	$Queries[] = "INSERT INTO  users VALUES (NULL, '$AdminEmail', PASSWORD('$AdminPassword'), '$AdminFirstName', '$AdminLastName', FROM_UNIXTIME(0))";
 
 	// 'user_groups' table creation
 	$Queries[] = "DROP   TABLE IF EXISTS user_groups";
@@ -195,9 +197,9 @@ function PopulateDatabase($MySqlServerAddress, $UserName, $UserPassword, $Databa
 	$Queries[] = "CREATE TABLE groups (gid   integer NOT NULL auto_increment,
 	                                   label text    NOT NULL,
 	                                   PRIMARY KEY (gid)) TYPE=MyISAM";
-	$Queries[] = "INSERT INTO  groups VALUES ('', 'Administrator')";
-	$Queries[] = "INSERT INTO  groups VALUES ('', 'Manager')";
-	$Queries[] = "INSERT INTO  groups VALUES ('', 'Staff')";
+	$Queries[] = "INSERT INTO  groups VALUES (NULL, 'Administrator')";
+	$Queries[] = "INSERT INTO  groups VALUES (NULL, 'Manager')";
+	$Queries[] = "INSERT INTO  groups VALUES (NULL, 'Staff')";
 
 	// 'group_projects' table creation
 	$Queries[] = "DROP   TABLE IF EXISTS group_projects";
@@ -211,7 +213,7 @@ function PopulateDatabase($MySqlServerAddress, $UserName, $UserPassword, $Databa
 	                                     ppid  integer NOT NULL,
 	                                     label text    NOT NULL,
 	                                     PRIMARY KEY (pid)) TYPE=MyISAM";
-	$Queries[] = "INSERT INTO  projects VALUES ('', 0, 'Chronologist Administration')";
+	$Queries[] = "INSERT INTO  projects VALUES (NULL, 0, 'Chronologist Administration')";
 
 	// 'tasks' table creation
 	$Queries[] = "DROP   TABLE IF EXISTS tasks";
@@ -225,11 +227,11 @@ function PopulateDatabase($MySqlServerAddress, $UserName, $UserPassword, $Databa
 
 	foreach ($Queries as $Query)
 	{
-		$Result = mysql_query($Query)
+		$Result = mysqli_query($Connection, $Query)
 		or die("Could not execute the '".$Query."' request.");
 	}
 
-	mysql_close();
+	mysqli_close();
 	return FALSE;
 	return TRUE;
 }

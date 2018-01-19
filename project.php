@@ -32,7 +32,6 @@ require_once("design.inc.php");
 require_once("project.inc.php");
 require_once("user.inc.php");
 
-
 // Retrieve the action to perform from the URL given 'do' parameter
 $Do = $_GET['do'];
 
@@ -40,7 +39,7 @@ $Do = $_GET['do'];
 switch($Do)
 {
     case "add" :
-        ShowSecureHeader("Project Creation", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Project Creation", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         ShowProjectFields();
 
@@ -72,15 +71,15 @@ switch($Do)
 
             // Insert the new project in the database
             $SQL =  "INSERT INTO `projects`
-                     VALUES ('',
+                     VALUES (NULL,
                              '$PPID',
                              '$Label',
                              '$Closed')
                     ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
 
-            $PID = mysql_insert_id();
+            $PID = mysqli_insert_id();
             if (ConnectedUserBelongsToAdminGroup() == TRUE)
             {
                 // ... ??? !
@@ -97,7 +96,7 @@ switch($Do)
                          VALUES ('$UID',
                                  '$PID')
                         ";
-                $Result = mysql_query($SQL)
+                $Result = mysqli_query($Connection, $SQL)
                 or die("Could not execute the '$SQL' request.");
             }
 
@@ -109,7 +108,7 @@ switch($Do)
         break;
 
     case "modify" :
-        ShowSecureHeader("Modify Project", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Modify Project", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         ShowProjectFields(putslashes($_POST['pid']));
 
@@ -147,7 +146,7 @@ switch($Do)
                            `closed` = '$Closed'
                     WHERE  `pid`  = '$PID'
                    ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
 
             $_SESSION['message'] = "The project has been modifyed succesfully. <BR>";
@@ -158,7 +157,7 @@ switch($Do)
         break;
 
     default :
-        ShowSecureHeader("Projects List", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Projects List", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         echo "
               <TABLE BORDER='0'>
@@ -217,10 +216,10 @@ switch($Do)
                     FROM   `projects`
                     WHERE  `pid` = '$PID'
                    ";
-            $Result = mysql_query($SQL)
+            $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
-            $Row = mysql_fetch_array($Result);
-            mysql_free_result($Result);
+            $Row = mysqli_fetch_array($Result);
+            mysqli_free_result($Result);
     
             $Closed = false;
             if ($Row['closed'] == 1)

@@ -34,7 +34,6 @@ require_once("task.inc.php");
 require_once("project.inc.php");
 require_once("activity.inc.php");
 
-
 // Retrieve the action to perform from the URL given 'do' parameter
 $Do = $_GET['do'];
 $GetPID = putslashes($_GET['pid']);
@@ -144,9 +143,10 @@ switch($Do)
         $TaskSQL .= " ORDER BY timestamp DESC";
 
 		// Gets the tasks that correspond to the given search parameters
-		$TaskResult = mysql_query($TaskSQL)
+		global $Connection;
+        $TaskResult = mysqli_query($Connection, $TaskSQL)
 		or die("Could not execute the '$TaskSQL' request.");
-        $TaskNumRows = mysql_num_rows($TaskResult);
+        $TaskNumRows = mysqli_num_rows($TaskResult);
 
 		// If there is no tasks for the currently logged user
 		if (($TaskNumRows == 0))
@@ -155,7 +155,7 @@ switch($Do)
 			$_SESSION['message'] .= "There is no tasks that correspond to the given parameters for the currently logged user !</br>";
 		}
 
-        ShowSecureHeader("Task Search Result", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Task Search Result", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
         echo "
               <TABLE BORDER='0'>
                   <TR ALIGN='CENTER'>
@@ -196,7 +196,7 @@ switch($Do)
 			$CurrentMonth = $CurrentDate['mon'];
 
 			// Displays all the projects
-			while ($TaskRow = mysql_fetch_array($TaskResult))
+			while ($TaskRow = mysqli_fetch_array($TaskResult))
 			{
 				$TID           = $TaskRow['tid'];
 				$TaskLabel     = $TaskRow['label'];
@@ -230,7 +230,7 @@ switch($Do)
 				 ";
 			}
 
-			mysql_free_result($TaskResult);
+			mysqli_free_result($TaskResult);
 
 	        echo "
                 </TABLE>
@@ -241,7 +241,7 @@ switch($Do)
         break;
 
     default :
-        ShowSecureHeader("Task Search", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+        ShowSecureHeader("Task Search", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
         ShowTaskSearchFields();
 

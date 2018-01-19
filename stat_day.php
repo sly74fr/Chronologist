@@ -33,7 +33,6 @@ require_once("task.inc.php");
 require_once("project.inc.php");
 require_once("stat.inc.php");
 
-
 // Retrieve the the week, the year and the week part to stat
 $UserFirstDay   = putslashes($_POST['first_day']);
 $UserFirstMonth = putslashes($_POST['first_month']);
@@ -65,7 +64,7 @@ if (($UserFirstDay == NULL) || ($UserFirstMonth == NULL) || ($UserFirstYear == N
 $FirstDay = mktime( 0,  0,  1, $UserFirstMonth, $UserFirstDay, $UserFirstYear);
 $LastDay  = mktime(23, 59, 59, $UserLastMonth,  $UserLastDay,  $UserLastYear);
 
-ShowSecureHeader("Day to day Statistics", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+ShowSecureHeader("Day to day Statistics", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 echo "
             <FORM ACTION='stat_day.php' METHOD='POST' NAME='stat_day'>
@@ -195,11 +194,11 @@ if ($TotalTime != 0)
                    ";
         }
     
-        $Result = mysql_query($SQL)
+        $Result = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
     
         // For each projects
-        while ($Row = mysql_fetch_array($Result))
+        while ($Row = mysqli_fetch_array($Result))
         {
             // Displays its label and total duration
             $Duration   = $Row['length'];
@@ -228,7 +227,7 @@ if ($TotalTime != 0)
             }
         }
 
-        mysql_free_result($Result);
+        mysqli_free_result($Result);
     }
 
     echo "

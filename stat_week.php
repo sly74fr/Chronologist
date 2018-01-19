@@ -33,7 +33,6 @@ require_once("task.inc.php");
 require_once("project.inc.php");
 require_once("stat.inc.php");
 
-
 // Retrieve the the week, the year and the week part to stat
 $UserWeek     = putslashes($_POST['week']);
 $UserYear     = putslashes($_POST['year']);
@@ -114,7 +113,7 @@ if ($BeginningMonth != $EndMonth)
 }
 
 
-ShowSecureHeader("Weekly Statistics", "http://"+$_SERVER['HTTP_HOST']+$_SERVER['REQUEST_URI']);
+ShowSecureHeader("Weekly Statistics", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 echo "
             <FORM ACTION='stat_week.php' METHOD='POST' NAME='stat_week'>
@@ -284,11 +283,11 @@ if ($TotalTime != 0)
             }
         }
     
-        $Result = mysql_query($SQL)
+        $Result = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
     
         // For each projects
-        while ($Row = mysql_fetch_array($Result))
+        while ($Row = mysqli_fetch_array($Result))
         {
             // Displays its label and total duration
             $Duration   = $Row['length'];
@@ -317,7 +316,7 @@ if ($TotalTime != 0)
             }
         }
 
-        mysql_free_result($Result);
+        mysqli_free_result($Result);
     }
 
     echo "

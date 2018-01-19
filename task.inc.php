@@ -27,6 +27,7 @@
  *******************************************************************************
  */
 
+require_once("design.inc.php");
 
 function DurationHour($DurationSeconds)
 {
@@ -101,10 +102,11 @@ function ShowTaskFields($TID = 0, $TimeStamp = 0)
                 FROM   `tasks`
                 WHERE  `tid` = '$TID'
                ";
-        $Result = mysql_query($SQL)
+        global $Connection;
+        $Result = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
-        $Row = mysql_fetch_array($Result);
-        mysql_free_result($Result);
+        $Row = mysqli_fetch_array($Result);
+        mysqli_free_result($Result);
 
         $TaskProject         = $Row['pid'];
         $TaskLabel           = $Row['label'];
