@@ -122,11 +122,11 @@ function ShowTaskFields($TID = 0, $TimeStamp = 0)
                         <FORM ACTION='task.php?do=update' METHOD='POST' NAME='task'>\n";
     }
 
-    $TaskBeginningYear   = $TaskBeginning[year];
-    $TaskBeginningMonth  = $TaskBeginning[mon];
-    $TaskBeginningDay    = $TaskBeginning[mday];
-    $TaskBeginningHour   = $TaskBeginning[hours];
-    $TaskBeginningMinute = $TaskBeginning[minutes];
+    $TaskBeginningYear   = $TaskBeginning['year'];
+    $TaskBeginningMonth  = $TaskBeginning['mon'];
+    $TaskBeginningDay    = $TaskBeginning['mday'];
+    $TaskBeginningHour   = $TaskBeginning['hours'];
+    $TaskBeginningMinute = $TaskBeginning['minutes'];
 
     echo "
                             <TABLE BORDER='0'>
