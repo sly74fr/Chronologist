@@ -267,7 +267,7 @@ class Activity
         $Result = mysqli_query($Connection, $SQL)
         or die("Could not execute the '$SQL' request.");
         
-        $this->aid = mysqli_insert_id();
+        $this->aid = mysqli_insert_id($Connection);
     }
 }
 

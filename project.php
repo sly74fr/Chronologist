@@ -79,7 +79,7 @@ switch($Do)
             $Result = mysqli_query($Connection, $SQL)
             or die("Could not execute the '$SQL' request.");
 
-            $PID = mysqli_insert_id();
+            $PID = mysqli_insert_id($Connection);
             if (ConnectedUserBelongsToAdminGroup() == TRUE)
             {
                 // ... ??? !

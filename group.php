@@ -83,7 +83,7 @@ if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManag
 		            $Result = mysqli_query($Connection, $SQL)
 		            or die("Could not execute the '$SQL' request.");
 
-		            $GID = mysqli_insert_id();
+		            $GID = mysqli_insert_id($Connection);
 
 		            // Puts the link between the newly created group and the logged user (as this group administrator) in the database
 		            $SQL =  "INSERT INTO `user_groups`
