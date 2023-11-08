@@ -35,10 +35,15 @@ require_once("stat.inc.php");
 
 
 // Retrieve the action to perform from the URL given 'do' parameter
-$Do = $_GET['do'];
+$Do = "";
+if (!empty($_GET['do'])) {
+    $Do  = $_GET['do'];
+}
 
-
-$RootProject  = putslashes($_POST['pid']);
+$RootProject = -1;
+if (!empty($_POST['pid'])) {
+    $RootProject = putslashes($_POST['pid']);
+}
 // If the root '- None -' project is selected (value = -1)
 if ($RootProject == -1)
 {

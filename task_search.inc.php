@@ -37,15 +37,7 @@ function ShowTaskSearchFields()
 
     $TaskLabel           = "";
 
-    $TaskBeginning       = $TimeStamp;
-    if ($TaskBeginning == 0)
-    {
-        $TaskBeginning = getdate();
-    }
-    else
-    {
-        $TaskBeginning = getdate($TimeStamp);
-    }
+    $TaskBeginning       = getdate();
 
     $TaskDurationHour    = 0;
     $TaskDurationMinute  = 0;

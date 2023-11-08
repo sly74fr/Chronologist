@@ -105,7 +105,11 @@ function ShowHeader($Title, $URL = "index.php")
           ";
 
     // If nobody is already connected
-    $UID = $_SESSION['uid'];
+    $UID = "";
+    if (!empty($_SESSION['uid'])) {
+        $UID = $_SESSION['uid'];
+    }
+    
     if ($UID == "")
     {
         // Displays the 'login' button
@@ -203,7 +207,11 @@ function ShowHeader($Title, $URL = "index.php")
           ";
 
     // If an error message was set
-    if ($_SESSION['message'] != "")
+    $message = "";
+    if (!empty($_SESSION['message'])) {
+        $message = $_SESSION['message'];
+    }
+    if ($message != "")
     {
         // Displays the error message
         echo "
@@ -268,7 +276,7 @@ function ShowFooter()
 	$Row = mysqli_fetch_array( $Result);
 
 	// If a version number was in the database
-	if ($Result > 0)
+	if ($Result)
 	{
 		// Displays the version number
 		echo htmlentities($Row['label']);
@@ -303,7 +311,7 @@ function GetFormattedDate($TimeStamp)
 	}
 	else
 	{
-		return strftime("%d/%m/%y", $TimeStamp);
+		return date("d/m/Y", $TimeStamp); //strftime("%d/%m/%y", $TimeStamp);
 	}
 }
 
@@ -317,7 +325,7 @@ function GetFormattedTime($TimeStamp)
 	}
 	else
 	{
-		return strftime("%Hh%M", $TimeStamp);
+		return date("H\hi", $TimeStamp);//strftime("%Hh%M", $TimeStamp);
 	}
 }
 
@@ -329,27 +337,21 @@ function GetFormattedDateAndTime($TimeStamp, $Separator = "-")
 	{
 		return "None";
 	}
-	else
-	{
-		$Date = GetFormattedDate($TimeStamp);
-		$Time = GetFormattedTime($TimeStamp);
-		return $Date.$Separator.$Time;
-	}
+
+    $Date = GetFormattedDate($TimeStamp);
+    $Time = GetFormattedTime($TimeStamp);
+    return $Date.$Separator.$Time;
 }
 
 
 // Add slashes to the given string for secure SQL use if needed
 function putslashes($String)
 {
-	// If PHP is not configured to add slashes by default
-	if (! get_magic_quotes_gpc())
-	{
-		// Add shlashes and return the resulting string
-		return addslashes($String);
-	}
-
-	// Otherwise, return the given string without any modification
-	return $String;
+    if ($String == null) {
+        $String = "";
+    }
+    // Add shlashes and return the resulting string
+    return addslashes($String);
 }
 
 ?>

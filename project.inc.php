@@ -84,7 +84,7 @@ class Project
             mysqli_free_result($Result);
             $Label = $Row['label'];
     
-            // If its the first loop
+            // If it's the first loop
             if ($LocalPID == $this->pid)
             {
                 // Only append the project name

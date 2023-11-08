@@ -36,7 +36,10 @@ require_once("user.inc.php");
 if ((ConnectedUserBelongsToAdminGroup() == TRUE) || (ConnectedUserBelongsToManagerGroup() == TRUE))
 {
 	// Retrieve the action to perform from the URL given 'do' parameter
-	$Do = $_GET['do'];
+    $Do = "";
+    if (!empty($_GET['do'])) {
+        $Do  = $_GET['do'];
+    }
 
 	switch($Do)
 	{

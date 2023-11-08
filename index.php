@@ -29,14 +29,17 @@
 
 require_once("design.inc.php");
 
-// Retrieve the action to perform from the URL given 'do' parameter
-$Do  = $_GET['do'];
+$Do = "";
+if (!empty($_GET['do'])) {
+    // Retrieve the action to perform from the URL given 'do' parameter
+    $Do  = $_GET['do'];
+}
 
 switch($Do)
 {
     case "login" :
         // If somebody was already connected
-        if ($_SESSION['uid'] != "")
+        if (!empty($_SESSION['uid']))
         {
 	        // Destroy all the previous session variables
 	        $_SESSION = array();
@@ -67,7 +70,7 @@ switch($Do)
 				$Expiration = $UserArray['timestamp'];
 
 				// If the user account has not expired yet (or will never expire)
-				if (($Expiration > mktime()) || ($Expiration == 0))
+				if (($Expiration > time()) || ($Expiration == 0))
 				{
 		            // Check if the given password is the same as the one in the database
 		            $PasswordSQL = "SELECT `uid`
@@ -171,7 +174,7 @@ switch($Do)
         ShowHeader("Homepage");
 
         // If somebody is already connected
-        if ($_SESSION['uid'] != "")
+        if (! empty($_SESSION['uid']))
 	    {
 	        // Display a welcome message
 	        echo "

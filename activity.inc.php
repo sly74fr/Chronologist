@@ -291,7 +291,7 @@ function GetActivityCompleteLabel($AID = 0)
 			   ";
         global $Connection;
 		$Result = mysqli_query($Connection, $SQL)
-		or die("Could not execute the '$SQL' request.");
+		  or die("Could not execute the '$SQL' request.");
 		$Row = mysqli_fetch_array($Result);
 		mysqli_free_result($Result);
 		$Label = $Row['label'];
@@ -476,7 +476,7 @@ function ShowActivityFields($AID = 0)
 			   ";
         global $Connection;
 		$Result = mysqli_query($Connection, $SQL)
-		or die("Could not execute the '$SQL' request.");
+    		or die("Could not execute the '$SQL' request.");
 		$Row = mysqli_fetch_array($Result);
 		mysqli_free_result($Result);
 

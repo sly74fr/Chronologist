@@ -70,7 +70,7 @@ function DurationFromHoursAndMinutes($Hours, $Minutes)
 // Displays the common task form
 function ShowTaskFields($TID = 0, $TimeStamp = 0)
 {
-    // If no user was specified, show an empty form
+    // If no task was specified, show an empty form
     if ($TID == 0)
     {
         $TaskProject   = "";
@@ -79,14 +79,14 @@ function ShowTaskFields($TID = 0, $TimeStamp = 0)
 
         $TaskLabel     = "";
 
-        $TaskBeginning = $TimeStamp;
+        $TaskBeginning = intval($TimeStamp);
         if ($TaskBeginning == 0)
         {
             $TaskBeginning = getdate();
         }
         else
         {
-            $TaskBeginning = getdate($TimeStamp);
+            $TaskBeginning = getdate(intval($TimeStamp));
         }
 
         $TaskDurationHour    = 0;

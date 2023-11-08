@@ -171,11 +171,11 @@ function ShowUserFields($UID = 0)
 	        echo "<FORM ACTION='user.php?do=user_update' METHOD='POST'>";
         }
 
-        $ExpirationYear       = $Expiration[year];
-        $ExpirationMonth      = $Expiration[mon];
-        $ExpirationDay        = $Expiration[mday];
-        $ExpirationHour       = $Expiration[hours];
-        $ExpirationMinute     = $Expiration[minutes];
+        $ExpirationYear       = $Expiration['year'];
+        $ExpirationMonth      = $Expiration['mon'];
+        $ExpirationDay        = $Expiration['mday'];
+        $ExpirationHour       = $Expiration['hours'];
+        $ExpirationMinute     = $Expiration['minutes'];
         $Expiration           = $ExpirationYear."-".$ExpirationMonth."-".$ExpirationDay." "
                                .$ExpirationHour.":".$ExpirationMinute.":00";
         echo "

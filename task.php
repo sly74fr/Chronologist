@@ -34,14 +34,21 @@ require_once("project.inc.php");
 require_once("activity.inc.php");
 
 // Retrieve the action to perform from the URL given 'do' parameter
-$Do = $_GET['do'];
+$Do = "";
+if (!empty($_GET['do'])) {
+    $Do  = $_GET['do'];
+}
 
 switch($Do)
 {
     case "add" :
         ShowSecureHeader("Task Creation", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
-        ShowTaskFields(0, putslashes($_POST['timestamp']));
+        $timestamp = "";
+        if (!empty($_GET['timestamp'])) {
+            $timestamp  = $_GET['timestamp'];
+        }
+        ShowTaskFields(0, putslashes($timestamp));
 
         ShowFooter();
         break;
@@ -310,14 +317,20 @@ switch($Do)
 
         ShowSecureHeader("Task List", "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
-        // Retrieve the the month and the year to list
-        $UserMonth = putslashes($_POST['month']);
-        $UserYear  = putslashes($_POST['year']);
-
         $CurrentDate  = getdate();
         $CurrentMonth = $CurrentDate['mon'];
         $CurrentYear  = $CurrentDate['year'];
         
+        // Retrieve the the month and the year to list
+        $UserMonth = NULL;
+        if (!empty($_POST['month'])) {
+            $UserMonth  = $_POST['month'];
+        }
+        $UserYear = NULL;
+        if (!empty($_POST['year'])) {
+            $UserYear  = $_POST['year'];
+        }
+
         // If the user specified a month and a year
         if (($UserMonth != NULL) && ($UserYear != NULL))
         {
@@ -421,7 +434,7 @@ switch($Do)
 			$TaskResult = mysqli_query($Connection, $TaskSQL)
 			or die("Could not execute the '$TaskSQL' request.");
 
-			$PreviousDate = NULL;
+			$PreviousDate = "";
 
 			// Displays all the projects
 			while ($TaskRow = mysqli_fetch_array($TaskResult))

@@ -33,8 +33,10 @@ require_once("activity.inc.php");
 require_once("user.inc.php");
 
 // Retrieve the action to perform from the URL given 'do' parameter
-$Do = $_GET['do'];
-
+$Do = "";
+if (!empty($_GET['do'])) {
+    $Do  = $_GET['do'];
+}
 
 switch($Do)
 {
@@ -164,11 +166,14 @@ switch($Do)
                     <TD>
                         <B> Activity </B>
                     </TD>
+                </TR>
+             ";
+/*
                     <TD>
                         <B> Closed ? </B>
                     </TD>
-                </TR>
-             ";
+*/
+
 
 			$Array = array();
 			$Array = GetSubActivities();
@@ -200,9 +205,7 @@ switch($Do)
                         <FORM ACTION='activity.php?do=modify' METHOD='POST'>
                             <TD ALIGN='LEFT'>
                                 ".htmlentities($Label)."
-                            </TD>
-                            <TD ALIGN='CENTER'>
-                                <INPUT TYPE='CHECKBOX' NAME='closed'";
+                            </TD>";
 
             // Gets the data with the given ID
             $SQL = "SELECT  DISTINCT *
@@ -214,20 +217,24 @@ switch($Do)
             $Row = mysqli_fetch_array($Result);
             mysqli_free_result($Result);
     
+            // @TBD in DB
+            /*
             $Closed = false;
             if ($Row['closed'] == 1)
             {
                 $Closed = true;
             }
-	        // If the project is closed
+	        // If the activity is closed
 	        if ($Closed == true)
 	        {
 		        echo " CHECKED";
 		    }
 
-            echo " DISABLED>
-                            </TD>
-                            <TD>
+            echo "          <TD ALIGN='CENTER'>
+                                <INPUT TYPE='CHECKBOX' NAME='closed' DISABLED>
+                            </TD>";
+		    */
+            echo "          <TD>
                                 <INPUT TYPE='HIDDEN' NAME='aid'   VALUE='".$AID."'>
                                 <INPUT TYPE='SUBMIT'              VALUE='Modify'>
                             </TD>

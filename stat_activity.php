@@ -35,10 +35,15 @@ require_once("stat.inc.php");
 
 
 // Retrieve the action to perform from the URL given 'do' parameter
-$Do = $_GET['do'];
+$Do = "";
+if (!empty($_GET['do'])) {
+    $Do  = $_GET['do'];
+}
 
-
-$RootActivity  = putslashes($_POST['aid']);
+$RootActivity = -1;
+if (!empty($_POST['aid'])) {
+    $RootProject = putslashes($_POST['aid']);
+}
 // If the root '- None -' activity is selected (value = -1)
 if ($RootActivity == -1)
 {

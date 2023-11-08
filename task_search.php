@@ -35,8 +35,11 @@ require_once("project.inc.php");
 require_once("activity.inc.php");
 
 // Retrieve the action to perform from the URL given 'do' parameter
-$Do = $_GET['do'];
-$GetPID = putslashes($_GET['pid']);
+$Do = "";
+if (!empty($_GET['do'])) {
+    $Do  = $_GET['do'];
+}
+//$GetPID = putslashes($_GET['pid']);
 
 
 switch($Do)
@@ -104,7 +107,7 @@ switch($Do)
 
         $TaskDuration = DurationFromHoursAndMinutes(putslashes($_POST['durationHour']), putslashes($_POST['durationMinute']));
 
-        $TaskEnd = $TaskBeginning + $TaskDuration;
+        //$TaskEnd = $TaskBeginning + $TaskDuration;
 
         // TODO : Checks beginning date vaildity with 'bool checkdate(int month, int day, int year)'
         // TODO : Checks beginning time validity with '??????'

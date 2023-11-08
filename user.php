@@ -37,8 +37,10 @@ global $Connection;
 // TODO : For newly created user, add a checkbox to specify wether its password must generated and sent by mail.
 
 // Retrieve the action to perform from the URL given 'do' parameter
-$Do = $_GET['do'];
-
+$Do = "";
+if (!empty($_GET['do'])) {
+    $Do  = $_GET['do'];
+}
 
 switch($Do)
 {
