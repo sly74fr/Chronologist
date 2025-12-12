@@ -27,4 +27,4 @@
 ################################################################################
 
 echo "MySQL root password :"
-mysql -u root -p < create.sql
+/usr/local/mysql/bin/mysql -u root -p < create.sql

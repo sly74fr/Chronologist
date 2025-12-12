@@ -26,7 +26,7 @@
 # AUTHORS     : Sylvain LAFRASSE.
 ################################################################################
 
-./uninstall.sh
+### ./uninstall.sh
 ./create.sh
 echo "MySQL Chronologist database password :"
-mysql -u titi -p -D titi < backup.sql
+/usr/local/mysql/bin/mysql -u titi -p -D titi < backup.sql

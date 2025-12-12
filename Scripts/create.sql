@@ -28,7 +28,6 @@
 CREATE DATABASE titi;
 
 USE mysql;
-DROP USER  'titi'@'localhost';
 CREATE USER 'titi'@'localhost' IDENTIFIED BY 'titi';
-GRANT ALL ON titi.* TO titi@localhost IDENTIFIED BY 'titi' WITH GRANT OPTION;
+GRANT ALL ON titi.* TO titi@localhost;
 FLUSH PRIVILEGES;

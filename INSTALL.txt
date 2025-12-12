@@ -1,14 +1,11 @@
 Chronologist - Install Readme
 
-
 To install Chronologist on a Web Server, you must already have :
-	- PHP 5.2.4 (PHP >= 4.3.0 should work)
-	- MySQL 5.0.45 (MySQL >= 4.1.2 should work)
-
+	- PHP 8.5
+	- MySQL 9.5
 
 1) Get the Chronologist-vX.X.X.xX.zip, uncompress it somewhere in your web directory on the server.
 2) Go to the 'script' directory.
 3) Launch 'install.sh'. This will require the MySQL root password first, in order to create the MySQL user 'titi' authentified by the password 'titi', and the 'titi' database. Then, it will require the MySQL 'titi' user password ('titi' as shown above) to create all the tables in the 'titi' database and the first Chronologist user of the system (named 'root',  authentified by the password 'admin').
-
 
 You are now ready to use Chronologist !
